@@ -1,0 +1,129 @@
+@charset "UTF-8";
+$dev: mobile;
+$designWidth: 750;
+$prefix-default: webkit spec;
+
+$warpBackColor: #bbada0;
+$warpCellBackColor: rgba(238, 228, 218, 0.35);
+
+$color: (
+        2:(bg: #eee4db, font:#776e66),
+        4:(bg: #ede0c9, font:#776e66),
+        8:(bg: #f2b179, font:#fff),
+        16:(bg: #f59563, font:#fff),
+        32:(bg: #f67c5f, font:#fff),
+        64:(bg: #f65e3b, font:#fff),
+        128:(bg: #ede0c9, font:#fff),
+        256:(bg: #edcf72, font:#fff),
+        512:(bg: #9c0, font:#fff),
+        1024:(bg: #33b5e5, font:#fff),
+        2048:(bg: #edc22e, font:#fff)
+);
+
+@import "../node_modules/compass/core/base";
+@import "../node_modules/compass/core/mobile";
+
+@mixin grid() {
+  width: rem(162.5);
+  height: rem(162.5);
+  border-radius: rem(10);
+}
+
+@mixin warp() {
+  @include position(absolute, 0 0 0 0);
+  margin: auto;
+  padding: rem(20);
+  width: rem(750);
+  height: rem(750);
+  border-radius: rem(25);
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  max-width: rem(750);
+  margin: auto !important;
+  overflow: hidden;
+  user-select: none;
+}
+
+.header {
+  height: rem(100);
+  position: relative;
+  &-title {
+    display: inline-block;
+    height: rem(100);
+    margin-left: rem(20);
+    line-height: rem(100);
+    font-size: rem(64);
+  }
+  &-info {
+    @include position(absolute, null rem(50) rem(10) null);
+    font-size: rem(32);
+    .info-font {
+      font-size: rem(28);
+      color: #ffa35f;
+    }
+    &-score {
+      margin-right: rem(24);
+    }
+  }
+}
+
+.container {
+  @include position(absolute, rem(100) 0 0 0);
+  box-sizing: border-box;
+  &-warp {
+    @include warp();
+    background: $warpBackColor;
+    &-row {
+      @include display(flex);
+      @include justify-content(space-around);
+      @include align-items(center);
+      width: rem(710);
+      height: rem(177.5);
+      &-cell {
+        display: inline-block;
+        @include grid();
+        background: $warpCellBackColor;
+      }
+    }
+  }
+  .container-tile {
+    @include warp();
+    &-grid {
+      display: table;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      @include transition(all 1s ease-in-out);
+      @include grid();
+      &-inner {
+        display: table-cell;
+        font-size: rem(48);
+        text-align: center;
+        vertical-align: middle;
+      }
+    }
+
+    // 遍历4行
+    @for $h from 1 through 4 {
+      // 遍历4列
+      @for $l from 1 through 4 {
+        &-grid-#{$h}-#{$l} {
+          top: rem(28)+rem(((162.5+14.5)*($h - 1)));
+          left: rem(28)+rem(((162.5+14.5)*($l - 1)));
+          //  2.75rem
+        }
+      }
+    }
+    // 遍历颜色
+    @each $key, $value in $color {
+      .grid-#{$key} {
+        background-color: map-get($value, bg);
+        color: map-get($value, font);
+      }
+    }
+
+  }
+}
